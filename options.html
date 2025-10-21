@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Text Black Hole 设置</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        input {
+            width: 100px;
+            margin-left: 10px;
+            padding: 2px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background: #007cba;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005a87;
+        }
+
+        #status {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Text Black Hole 参数调整</h1>
+    <p>调整后点击保存，重载页面生效。</p>
+    <label>ADSORPTION_FORCE (吸附力，5-1œ5): <input type="number" id="ADSORPTION_FORCE" value="10" min="5" max="15"
+            step="0.5"></label>
+    <label>SPEED_FACTOR_BASE (速度基数，8-15): <input type="number" id="SPEED_FACTOR_BASE" value="12" min="8" max="15"
+            step="0.5"></label>
+    <label>RETURN_DAMPING (回位阻尼，0.03-0.08): <input type="number" id="RETURN_DAMPING" value="0.05" min="0.03" max="0.08"
+            step="0.01"></label>
+    <label>FRICTION (摩擦，0.92-0.98): <input type="number" id="FRICTION" value="0.95" min="0.92" max="0.98"
+            step="0.01"></label>
+    <label>UPDATE_THROTTLE (更新节流，2-5): <input type="number" id="UPDATE_THROTTLE" value="3" min="2" max="5"></label>
+    <label>RADIUS (半径，150-250): <input type="number" id="RADIUS" value="200" min="150" max="650"></label>
+    <label>VELOCITY_CAP (速度上限，0.05-0.2): <input type="number" id="VELOCITY_CAP" value="0.1" min="0.05" max="0.2"
+            step="0.01"></label>
+    <label>LOW_FPS_THRESHOLD (低FPS阈值，35-50): <input type="number" id="LOW_FPS_THRESHOLD" value="40" min="35"
+            max="50"></label>
+    <button id="save">保存设置</button>
+    <p id="status"></p>
+
+    <script>
+        // 加载当前值
+        chrome.storage.local.get(null, (items) => {
+            Object.keys(items).forEach(key => {
+                const input = document.getElementById(key);
+                if (input) input.value = items[key] || input.defaultValue;
+            });
+        });
+
+        document.getElementById('save').addEventListener('click', () => {
+            const params = {};
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                params[input.id] = parseFloat(input.value);
+            });
+            chrome.storage.local.set(params, () => {
+                document.getElementById('status').textContent = '保存成功！重载页面应用变化。';
+            });
+        });
+    </script>
+</body>
+
+</html>
